@@ -173,12 +173,12 @@ const RegisterPage = () => {
     <div className="min-h-screen w-full bg-gradient-to-br from-white via-gray-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-900 dark:text-white flex justify-center relative overflow-hidden transition-all duration-500">
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-red-500/5 dark:bg-red-500/10 rounded-full blur-3xl animate-pulse transition-colors duration-500"></div>
+        {/* <div className="absolute top-0 left-0 w-96 h-96 bg-red-500/5 dark:bg-red-500/10 rounded-full blur-3xl animate-pulse transition-colors duration-500"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000 transition-colors duration-500"></div>
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-purple-500/5 dark:bg-white/5 rounded-full blur-2xl animate-pulse delay-2000 transition-colors duration-500"></div>
+        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-purple-500/5 dark:bg-white/5 rounded-full blur-2xl animate-pulse delay-2000 transition-colors duration-500"></div> */}
 
         {/* Floating food icons */}
-        <div className="absolute top-20 right-20 w-16 h-16 bg-purple-500/10 dark:bg-purple-500/10 rounded-full flex items-center justify-center animate-bounce">
+        {/* <div className="absolute top-20 right-20 w-16 h-16 bg-purple-500/10 dark:bg-purple-500/10 rounded-full flex items-center justify-center animate-bounce">
           <span className="text-2xl">🎂</span>
         </div>
         <div className="absolute top-40 left-32 w-12 h-12 bg-green-500/10 dark:bg-green-500/10 rounded-full flex items-center justify-center animate-pulse">
@@ -189,7 +189,7 @@ const RegisterPage = () => {
         </div>
         <div className="absolute bottom-20 left-20 w-10 h-10 bg-pink-500/10 dark:bg-pink-500/10 rounded-full flex items-center justify-center animate-pulse">
           <span className="text-lg">🍰</span>
-        </div>
+        </div> */}
       </div>
 
       <div className="flex w-full max-w-6xl mx-auto relative z-16 mt-20">

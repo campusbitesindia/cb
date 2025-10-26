@@ -19,6 +19,7 @@ import { motion } from "framer-motion";
 import GlobalSearchDropdown from "./global-search-dropdown";
 import { ThemeToggle } from "./theme-toggle";
 import clickOutside from "../../hooks/clickOutside";
+import { Download } from "lucide-react";
 
 // Custom UI Components
 const Button = ({
@@ -700,12 +701,30 @@ function Navbar() {
                           handleNavigation("/register");
                           setIsMenuOpen(false);
                         }}
-                        className="w-full h-12 bg-red-600 hover:bg-red-700 rounded-xl text-lg font-bold"
+                        className="w-full h-12 bottom-5 bg-red-600 hover:bg-red-700 rounded-xl text-lg font-bold"
                       >
                         Sign Up
                       </Button>
                     </div>
                   )}
+                  <div className="bottom-0 right-0 left-0 w-full p-9 bg-[#0a192f] border-t border-slate-700">
+                    <Button
+                      onClick={() => {
+                        const apkUrl = `${window.location.origin}/campus-bites.apk`;
+
+                        const link = document.createElement("a");
+                        link.href = apkUrl;
+                        link.download = "campus-bites.apk"; // triggers actual download
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }}
+                      className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl text-lg shadow-lg flex items-center justify-center space-x-2"
+                    >
+                      <Download className="w-5 h-5" />
+                      <span>Download APK</span>
+                    </Button>
+                  </div>
 
                   {/* Theme Toggle at bottom */}
                   <div className="mt-auto p-6 flex justify-center">

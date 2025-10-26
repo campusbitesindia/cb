@@ -68,7 +68,7 @@ export default function GlobalSearchDropdown({
   const getResultLink = (item) => {
   
     if (item.type === "item" || item.type === "dish")
-      return `/canteen/${item.canteen}`;
+      return `/canteen/${item.canteen._id}`;
     if (item.type === "canteen") return `/canteen/${item._id}`;
     return "#";
   };
