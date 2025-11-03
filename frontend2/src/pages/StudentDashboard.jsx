@@ -407,7 +407,7 @@ export default function StudentDashboard() {
     setIsCreatingOrder(true);
     try {
       console.log("Sending create group order request:", {
-        url: "https://campusbites-mxpe.onrender.com/api/v1/groupOrder/create-order",
+        url: "https://cbbackend-kvp6.onrender.com/api/v1/groupOrder/create-order",
         method: "POST",
         bodyData: { canteen: selectedCanteen },
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -418,7 +418,7 @@ export default function StudentDashboard() {
       }
 
       const res = await fetch(
-        "https://campusbites-mxpe.onrender.com/api/v1/groupOrder/create-order",
+        "https://cbbackend-kvp6.onrender.com/api/v1/groupOrder/create-order",
         {
           method: "POST",
           headers: {

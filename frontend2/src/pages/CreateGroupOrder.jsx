@@ -20,7 +20,7 @@ class CreateGroupOrderPage extends React.Component {
   fetchCanteens = async () => {
     try {
       const res = await fetch(
-        "https://campusbites-mxpe.onrender.com/api/v1/canteens",
+        "https://cbbackend-kvp6.onrender.com/api/v1/canteens",
         {
           headers: { Authorization: `Bearer ${this.state.token}` },
         }
@@ -50,7 +50,7 @@ class CreateGroupOrderPage extends React.Component {
 
     try {
       const res = await fetch(
-        "https://campusbites-mxpe.onrender.com/api/v1/groupOrder/create-order",
+        "https://cbbackend-kvp6.onrender.com/api/v1/groupOrder/create-order",
         {
           method: "POST",
           headers: {

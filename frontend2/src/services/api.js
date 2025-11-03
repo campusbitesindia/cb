@@ -1,5 +1,4 @@
-const Baseurl =
-  import.meta.env.VITE_APP_BASE_URL || "https://campusbites-mxpe.onrender.com/api/v1";
+const Baseurl = "https://cbbackend-kvp6.onrender.com/api/v1";
 
 export const AuthApi = {
   RegisterVendorapi: Baseurl + "/canteens/create",

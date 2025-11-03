@@ -152,7 +152,7 @@ export default function GroupOrderPage() {
       setLoading(true);
       try {
         const res = await fetch(
-          `https://campusbites-mxpe.onrender.com/api/v1/groupOrder/${groupLink}`,
+          `https://cbbackend-kvp6.onrender.com/api/v1/groupOrder/${groupLink}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -187,7 +187,7 @@ export default function GroupOrderPage() {
       if (!groupOrder?.canteen || !token) return;
       try {
         const res = await fetch(
-          `https://campusbites-mxpe.onrender.com/api/v1/items/getItems/${groupOrder.canteen}`,
+          `https://cbbackend-kvp6.onrender.com/api/v1/items/getItems/${groupOrder.canteen}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -218,7 +218,7 @@ export default function GroupOrderPage() {
       };
       console.log(updatePayload);
       const res = await fetch(
-        `https://campusbites-mxpe.onrender.com/api/v1/groupOrder/items`,
+        `https://cbbackend-kvp6.onrender.com/api/v1/groupOrder/items`,
         {
           method: "POST",
           headers: {
@@ -245,7 +245,7 @@ export default function GroupOrderPage() {
   const fetchGroupOrder = async () => {
     try {
       const res = await fetch(
-        `https://campusbites-mxpe.onrender.com/api/v1/groupOrder/${groupLink}`,
+        `https://cbbackend-kvp6.onrender.com/api/v1/groupOrder/${groupLink}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -400,7 +400,7 @@ export default function GroupOrderPage() {
         canteen: groupOrder.canteen,
       };
       const res = await fetch(
-        `https://campusbites-mxpe.onrender.com/api/v1/groupOrder/add-items-payment`,
+        `https://cbbackend-kvp6.onrender.com/api/v1/groupOrder/add-items-payment`,
         {
           method: "POST",
           headers: {
@@ -448,7 +448,7 @@ export default function GroupOrderPage() {
         handler: async function (response) {
           try {
             const res = await fetch(
-              `https://campusbites-mxpe.onrender.com/api/v1/payments/verify`,
+              `https://cbbackend-kvp6.onrender.com/api/v1/payments/verify`,
               {
                 method: "POST",
                 headers: {
@@ -495,7 +495,7 @@ export default function GroupOrderPage() {
         return;
       }
       const res = await fetch(
-        `https://campusbites-mxpe.onrender.com/api/v1/groupOrder/join`,
+        `https://cbbackend-kvp6.onrender.com/api/v1/groupOrder/join`,
         {
           method: "POST",
           headers: {
