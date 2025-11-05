@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "../component/ui/button";
@@ -22,7 +22,7 @@ import {
   incrementQuantity,
   decrementQuantity,
 } from "../slices/CartSlice";
-import { OrderApi } from "../services/api";
+import { OrderApi, OfferApi } from "../services/api";
 import apiConnector from "../services/apiConnector";
 import toast from "react-hot-toast";
 import { useSocket } from "../context/Socket";
@@ -40,12 +40,54 @@ function CartPageContent() {
   const [discount, setDiscount] = useState(0);
   const [pickupTime, setPickupTime] = useState("");
   const [note, setNote] = useState("");
+  const [offers, setOffers] = useState([]);
+  const [offersLoading, setOffersLoading] = useState(false);
+  const [selectedOfferId, setSelectedOfferId] = useState(null);
+  const [isOfferPickerOpen, setIsOfferPickerOpen] = useState(false);
   const { isConnected, connectSocket, getSocket } = useSocket();
   // Calculate total price from cart
   const totalPrice = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+
+  // Derive selected offer and compute preview discount (mirrors backend logic)
+  const selectedOffer = useMemo(
+    () => offers.find((o) => o._id === selectedOfferId),
+    [offers, selectedOfferId]
+  );
+
+  const offerDiscount = useMemo(() => {
+    if (!selectedOffer) return 0;
+
+    const total = Number(totalPrice || 0);
+    const minValue = Number(selectedOffer.MinValue || 0);
+    const maxValue = Number(selectedOffer.MaxValue || 0);
+    const maxDiscount = Number(selectedOffer.MaxDiscount || 0);
+    const pct = Number(selectedOffer.discount || 0); // e.g. 10 for 10%
+
+    // Enforce minimum order value
+    if (total < minValue) return 0;
+
+    // Calculate dynamic minimum discount (based on MinValue)
+    const minPossibleDiscount = (minValue * pct) / 100;
+
+    // If total ≥ MaxValue → apply flat MaxDiscount
+    if (maxValue && total >= maxValue) {
+      return Math.min(maxDiscount, total);
+    }
+
+    // Percentage discount
+    const percDisc = (total * pct) / 100;
+
+    // Apply limits: between minPossibleDiscount and maxDiscount
+    const finalDiscount = Math.min(
+      Math.max(percDisc, minPossibleDiscount),
+      maxDiscount
+    );
+
+    return Math.max(0, finalDiscount);
+  }, [selectedOffer, totalPrice]);
 
   // Quantity and removal handlers
   const handleQuantityChange = (id, newQuantity) => {
@@ -115,7 +157,9 @@ function CartPageContent() {
         canteenId,
         note: note.trim(),
         promoCode: promoCode || null,
+        // Only promo code discount is sent explicitly; offer is recalculated on backend
         discount: discount,
+        offer: selectedOfferId || undefined,
       };
 
       console.log("Order Data:", orderData);
@@ -139,7 +183,9 @@ function CartPageContent() {
     } catch (error) {
       console.error("Checkout error:", error);
       toast.error(
-        error.message || "There was a problem with your cart. Please try again."
+        error?.response?.data?.message ||
+          error.message ||
+          "There was a problem with your cart. Please try again."
       );
     } finally {
       setIsPlacingOrder(false);
@@ -158,6 +204,32 @@ function CartPageContent() {
       pickupInput.setAttribute("min", minTime);
     }
   }, []);
+
+  // Fetch active offers only when cart has items
+  useEffect(() => {
+    if (!cart.length) {
+      setSelectedOfferId(null);
+      return;
+    }
+    const fetchOffers = async () => {
+      setOffersLoading(true);
+      try {
+        const res = await apiConnector(OfferApi.getActiveOffer, "GET", null, {
+          "Content-Type": "application/json",
+        });
+        if (res.data.success && Array.isArray(res.data.data)) {
+          setOffers(res.data.data);
+        } else {
+          setOffers([]);
+        }
+      } catch (e) {
+        setOffers([]);
+      } finally {
+        setOffersLoading(false);
+      }
+    };
+    fetchOffers();
+  }, [cart.length]);
 
   if (cart.length === 0) {
     return (
@@ -414,6 +486,32 @@ function CartPageContent() {
                   {isApplyingPromo ? "Applying..." : "Apply"}
                 </Button>
               </div>
+              {/* View all coupons CTA (below promo code) */}
+              {offers.length > 0 && (
+                <div className="mt-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-red-500 text-red-500 hover:bg-red-50/10 text-xs"
+                    style={{
+                      backgroundColor: "#10182e",
+                      borderColor: "#E5524A",
+                      color: "#E5524A",
+                    }}
+                    onClick={() => setIsOfferPickerOpen(true)}
+                  >
+                    View all coupons
+                  </Button>
+                  {selectedOffer && (
+                    <button
+                      onClick={() => setSelectedOfferId(null)}
+                      className="ml-3 text-[11px] text-red-400 hover:text-red-300"
+                    >
+                      Remove selected
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -469,6 +567,26 @@ function CartPageContent() {
                     </span>
                   </div>
                 )}
+                {selectedOfferId && (
+                  <>
+                    {offerDiscount > 0 ? (
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-400">Offer Discount</span>
+                        <span className="text-green-400">
+                          -₹{offerDiscount.toFixed(2)}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex justify-between text-[11px]">
+                        <span className="text-gray-500">
+                          Offer selected but not eligible (Min ₹
+                          {selectedOffer?.MinValue})
+                        </span>
+                        <span className="text-gray-500">-₹0.00</span>
+                      </div>
+                    )}
+                  </>
+                )}
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Delivery Fee</span>
                   <span className="text-white">₹0</span>
@@ -483,7 +601,7 @@ function CartPageContent() {
                 <div className="flex justify-between font-bold text-base">
                   <span className="text-white">To Pay</span>
                   <span className="text-white">
-                    ₹{(totalPrice - discount).toFixed(2)}
+                    ₹{(totalPrice - discount - offerDiscount).toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -517,6 +635,111 @@ function CartPageContent() {
           </div>
         </div>
       </div>
+
+      {/* Offer Picker Overlay */}
+      {isOfferPickerOpen && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center sm:justify-center">
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setIsOfferPickerOpen(false)}
+          />
+          <div
+            className="relative w-full sm:max-w-lg sm:rounded-xl sm:shadow-2xl border border-gray-700/40"
+            style={{ backgroundColor: "#0b1120" }}
+          >
+            <div className="p-3 border-b border-gray-700/40 flex items-center justify-between">
+              <div className="text-white font-semibold text-sm">
+                Available Coupons
+              </div>
+              <button
+                onClick={() => setIsOfferPickerOpen(false)}
+                className="text-xs text-gray-300 hover:text-white"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="max-h-[60vh] overflow-y-auto p-3 space-y-2">
+              {offersLoading ? (
+                <p className="text-xs text-gray-400">Loading offers...</p>
+              ) : offers.length === 0 ? (
+                <p className="text-xs text-gray-500">No active offers</p>
+              ) : (
+                offers.map((o) => {
+                  const eligible = totalPrice >= (o.MinValue || 0);
+                  const isSelected = selectedOfferId === o._id;
+                  return (
+                    <div
+                      key={o._id}
+                      className={`flex items-start justify-between p-2 rounded-md border text-xs ${
+                        isSelected
+                          ? "border-green-500 bg-green-500/10"
+                          : "border-gray-700/50"
+                      }`}
+                      style={{ backgroundColor: "#10182e" }}
+                    >
+                      <div className="pr-2">
+                        <p className="text-white font-medium">
+                          {o.description}
+                        </p>
+                        <p className="text-gray-400 mt-0.5">
+                          Min ₹{o.MinValue} • Up to ₹{o.MaxDiscount}
+                        </p>
+                        <p className="text-gray-500 mt-0.5">
+                          {Math.round((o.discount || 0) * 100)}% off
+                        </p>
+                        {!eligible && (
+                          <p className="text-[11px] text-amber-300 mt-0.5">
+                            Add items worth ₹
+                            {Math.max(
+                              0,
+                              (o.MinValue || 0) - totalPrice
+                            ).toFixed(0)}{" "}
+                            to use this coupon
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {isSelected ? (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-xs border-green-500 text-green-500"
+                            style={{ backgroundColor: "#10182e" }}
+                            onClick={() => {
+                              setIsOfferPickerOpen(false);
+                            }}
+                          >
+                            Selected
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={!eligible}
+                            className={`text-xs ${
+                              eligible
+                                ? "border-red-500 text-red-500"
+                                : "border-gray-600 text-gray-500"
+                            }`}
+                            style={{ backgroundColor: "#10182e" }}
+                            onClick={() => {
+                              setSelectedOfferId(o._id);
+                              setIsOfferPickerOpen(false);
+                            }}
+                          >
+                            Apply
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

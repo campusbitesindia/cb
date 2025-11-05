@@ -10,6 +10,7 @@ const navItems = [
   { name: "Campuses", href: "/admin/campuses" },
   { name: "Payouts", href: "/admin/payouts" },
   { name: "Bank Details", href: "/admin/bank-details" },
+  { name: "Offers", href: "/admin/offers" },
 ];
 
 export default function AdminNavbar() {

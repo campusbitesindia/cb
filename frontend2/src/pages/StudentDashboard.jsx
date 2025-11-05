@@ -17,7 +17,7 @@ import { GetAllCanteens } from "../services/operations/Canteens";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-
+import AdvertisementBanner from "../component/common/AdvertisementBanner";
 const categories = [
   { id: "all", name: "All", icon: "🍽️" },
   { id: "indian", name: "Indian", icon: "🍛" },
@@ -177,9 +177,9 @@ const GroupOrderModal = ({
   navigate,
 }) => {
   const [selectedCanteen, setSelectedCanteen] = useState("");
-  const rawToken = localStorage.getItem('token');
+  const rawToken = localStorage.getItem("token");
   // Remove quotes and whitespace from token
-  const token = rawToken ? rawToken.replace(/^"|"$/g, '').trim() : null;
+  const token = rawToken ? rawToken.replace(/^"|"$/g, "").trim() : null;
 
   const handleCreateOrder = () => {
     if (!selectedCanteen) {
@@ -188,7 +188,7 @@ const GroupOrderModal = ({
     }
     if (!token) {
       toast.error("Authentication error: No token found. Please log in.");
-      navigate('/login'); // Redirect to login page
+      navigate("/login"); // Redirect to login page
       return;
     }
     onCreateOrder(selectedCanteen, token);
@@ -273,7 +273,9 @@ const GroupOrderModal = ({
                     className="w-48 h-48 rounded"
                   />
                 </div>
-                <p className="text-sm text-gray-400 mt-3">Scan QR code to join</p>
+                <p className="text-sm text-gray-400 mt-3">
+                  Scan QR code to join
+                </p>
               </div>
             )}
 
@@ -299,7 +301,9 @@ const GroupOrderModal = ({
                   Copy Link
                 </button>
                 <button
-                  onClick={() => navigate(`/group-order?link=${orderDetails.groupLink}`)}
+                  onClick={() =>
+                    navigate(`/group-order?link=${orderDetails.groupLink}`)
+                  }
                   className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-lg"
                 >
                   <ExternalLink className="w-4 h-4" />
@@ -410,7 +414,10 @@ export default function StudentDashboard() {
         url: "https://cbbackend-kvp6.onrender.com/api/v1/groupOrder/create-order",
         method: "POST",
         bodyData: { canteen: selectedCanteen },
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!token) {
@@ -554,7 +561,9 @@ export default function StudentDashboard() {
               ))}
             </div>
           </div>
-
+          <div className="mb-8">
+            <AdvertisementBanner />
+          </div>
           {/* Group Order Banner */}
           <div className="mb-12">
             <div className="border border-red-500 bg-red-600 shadow-xl text-white rounded-xl overflow-hidden">

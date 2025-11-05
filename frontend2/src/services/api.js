@@ -102,7 +102,7 @@ export const AdminApi = {
   adminLoginApi: Baseurl + "/admin/login",
 
   // Campus management
-  createCampusapi:Baseurl+"/campuses/create",
+  createCampusapi: Baseurl + "/campuses/create",
   campusesSummaryApi: Baseurl + "/admin/campuses-summary",
   campusUsersApi: Baseurl + "/admin/campus", // Note: requires /:campusId/users
   campusCanteensApi: Baseurl + "/admin/campus", // Note: requires /:campusId/canteens
@@ -145,7 +145,12 @@ export const ReviewApi = {
   deleteReview: Baseurl + "/reviews/delete",
 };
 
-export const SearchApi={
-  searchAll:Baseurl+`/search`
-
-}
+export const SearchApi = {
+  searchAll: Baseurl + `/search`,
+};
+export const OfferApi = {
+  createOffer: Baseurl + "/offers/create",
+  updateOffer: Baseurl + "/offers/update", // Note: requires /:id
+  getAllOffers: Baseurl + "/offers/getAllOffers",
+  getActiveOffer: Baseurl + "/offers/getActiveOffer",
+};

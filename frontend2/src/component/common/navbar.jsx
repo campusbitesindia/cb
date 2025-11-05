@@ -296,7 +296,9 @@ function Navbar() {
           <div className="flex h-20 items-center justify-between">
             <Logo
               href={
-                pathname === "/campus/dashboard" ? "/campus/dashboard" : "/"
+                pathname === "/campus/dashboard"
+                  ? "/campus/dashboard"
+                  : "/dashboard/overview"
               }
             />
 

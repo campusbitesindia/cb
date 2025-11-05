@@ -93,7 +93,7 @@ export function RouteProtection({
           break;
         case "campus":
         case "canteen":
-          navigate("/campus/dashboard", { replace: true });
+          navigate("/campus/dashboard/overview", { replace: true });
           break;
         case "admin":
           navigate("/admin/dashboard", { replace: true });
@@ -140,7 +140,9 @@ export function RouteProtection({
 
 // Convenience components for role-based routes
 export function StudentOnlyRoute({ children }) {
-  return <RouteProtection allowedRoles={["student"]}>{children}</RouteProtection>;
+  return (
+    <RouteProtection allowedRoles={["student"]}>{children}</RouteProtection>
+  );
 }
 
 export function CampusOnlyRoute({ children }) {

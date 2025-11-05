@@ -58,7 +58,7 @@ import TermsConditionsPage from "./pages/TermsAndCondition";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
 import GroupOrderPage from "./pages/GroupOrder";
-
+import AdminOffersPage from "./pages/AdminOffersPage";
 function App() {
   const { token, User } = useSelector((state) => state.Auth);
   const { Profile } = useSelector((state) => state.Profile);
@@ -207,6 +207,7 @@ function App() {
             />
             <Route path="payouts" element={<AdminPayoutsPage />} />
             <Route path="bank-details" element={<BankDetailsVerification />} />
+            <Route path="offers" element={<AdminOffersPage />} />
           </Route>
 
           <Route path="/about" element={<AboutPage />} />
