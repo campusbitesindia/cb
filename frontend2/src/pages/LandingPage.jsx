@@ -71,7 +71,7 @@ export default function LandingPage() {
                     Order Now <ArrowRight className="w-5 h-5 ml-2" />
                   </Link>
                 </Button>
-                <Button
+                {/* <Button
                   size="lg"
                   variant="outline"
                   className="border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white px-8 py-6 text-lg rounded-full transition-all duration-300 transform hover:scale-105"
@@ -79,27 +79,27 @@ export default function LandingPage() {
                   <Link to="#demo" className="flex items-center">
                     <span className="mr-2">▶</span>Watch Demo
                   </Link>
-                </Button>
+                </Button> */}
 
-                {/* <Button
+                <Button
                   size="lg"
                   className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-3"
                   onClick={() => {
-                        const apkUrl = `${window.location.origin}/campus-bites.apk`;
+                    const apkUrl = `${window.location.origin}/campus-bites.apk`;
 
-                        const link = document.createElement("a");
-                        link.href = apkUrl;
-                        link.download = "campus-bites.apk"; // triggers actual download
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                      }}
+                    const link = document.createElement("a");
+                    link.href = apkUrl;
+                    link.download = "campus-bites.apk"; // triggers actual download
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }}
                 >
                   <Download className="w-6 h-6" />
                   <div className="flex flex-col items-center leading-none">
                     <span>Download APK</span>
                   </div>
-                </Button> */}
+                </Button>
               </div>
 
               {/* Stats */}

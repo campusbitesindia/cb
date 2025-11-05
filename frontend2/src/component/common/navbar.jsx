@@ -709,7 +709,7 @@ function Navbar() {
                       </Button>
                     </div>
                   )}
-                  {/* <div className="bottom-0 right-0 left-0 w-full p-9 bg-[#0a192f] border-t border-slate-700">
+                  <div className="bottom-0 right-0 left-0 w-full p-9 bg-[#0a192f] border-t border-slate-700">
                     <Button
                       onClick={() => {
                         const apkUrl = `${window.location.origin}/campus-bites.apk`;
@@ -726,7 +726,7 @@ function Navbar() {
                       <Download className="w-5 h-5" />
                       <span>Download APK</span>
                     </Button>
-                  </div> */}
+                  </div>
 
                   {/* Theme Toggle at bottom */}
                   <div className="mt-auto p-6 flex justify-center">
