@@ -26,6 +26,11 @@ import { OrderApi, OfferApi } from "../services/api";
 import apiConnector from "../services/apiConnector";
 import toast from "react-hot-toast";
 import { useSocket } from "../context/Socket";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import dayjs from "dayjs";
+import CartTimePicker from "../component/CartTimePicker";
 
 function CartPageContent() {
   const dispatch = useDispatch();
@@ -38,13 +43,16 @@ function CartPageContent() {
   const [isApplyingPromo, setIsApplyingPromo] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [discount, setDiscount] = useState(0);
-  const [pickupTime, setPickupTime] = useState("");
   const [note, setNote] = useState("");
   const [offers, setOffers] = useState([]);
   const [offersLoading, setOffersLoading] = useState(false);
   const [selectedOfferId, setSelectedOfferId] = useState(null);
   const [isOfferPickerOpen, setIsOfferPickerOpen] = useState(false);
   const { isConnected, connectSocket, getSocket } = useSocket();
+  // Minimum selectable time = current time + 11 minutes
+  const minAllowedTime = dayjs().add(11, "minute");
+  const [time, setTime] = useState(minAllowedTime);
+
   // Calculate total price from cart
   const totalPrice = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -139,12 +147,12 @@ function CartPageContent() {
         }
       });
 
-      if (!pickupTime) {
+      if (!time) {
         throw new Error("Please select a pickup time");
       }
 
       // Validate pickup time is at least 10 minutes from now
-      const selectedPickupTime = new Date(pickupTime);
+      const selectedPickupTime = new Date(time);
       if (selectedPickupTime.getTime() - Date.now() < 10 * 60 * 1000) {
         throw new Error("Pickup time must be at least 10 minutes from now");
       }
@@ -191,19 +199,6 @@ function CartPageContent() {
       setIsPlacingOrder(false);
     }
   };
-
-  // Set minimum pickup time (10 minutes from now)
-  useEffect(() => {
-    const now = new Date();
-    now.setMinutes(now.getMinutes() + 10);
-    const minTime = now.toISOString().slice(0, 16);
-
-    // Set the min attribute for the datetime-local input
-    const pickupInput = document.getElementById("pickupTime");
-    if (pickupInput) {
-      pickupInput.setAttribute("min", minTime);
-    }
-  }, []);
 
   // Fetch active offers only when cart has items
   useEffect(() => {
@@ -518,7 +513,7 @@ function CartPageContent() {
           {/* Order Summary */}
           <div className="lg:w-1/3 space-y-4">
             {/* Pickup Time Input */}
-            <div
+            {/* <div
               className="rounded-lg p-3 shadow-lg"
               style={{ backgroundColor: "#10182e" }}
             >
@@ -543,7 +538,12 @@ function CartPageContent() {
               <p className="mt-1 text-xs text-gray-400">
                 Pickup time must be at least 10 minutes from now.
               </p>
-            </div>
+            </div> */}
+            <CartTimePicker
+              time={time}
+              setTime={setTime}
+              minAllowedTime={minAllowedTime}
+            />
 
             {/* Bill Details */}
             <div
