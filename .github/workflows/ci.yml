@@ -1,0 +1,34 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: [dev]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend2   # 👈 IMPORTANT (your frontend folder)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Start frontend (test run)
+        run: |
+          npm start &
+          sleep 10
