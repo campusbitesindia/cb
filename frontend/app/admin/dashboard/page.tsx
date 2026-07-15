@@ -698,7 +698,7 @@ export default function AdminDashboard() {
         beginAtZero: true,
         ticks: {
           color: '#fff',
-          callback: function(value) {
+          callback: function(value: any) {
             return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(value as number);
           },
         },
@@ -788,7 +788,7 @@ export default function AdminDashboard() {
     maintainAspectRatio: false,
     animation: {
       duration: 1000,
-      easing: 'easeInOutQuart'
+      easing: 'easeInOutQuart' as const
     },
     layout: {
       padding: 16
@@ -815,18 +815,18 @@ export default function AdminDashboard() {
         position: 'top' as const,
         labels: {
           color: '#e2e8f0',
-          font: { 
-            size: 12, 
-            weight: '600',
+          font: {
+            size: 12,
+            weight: 600,
             family: "'Inter', sans-serif"
           },
           padding: 20,
           usePointStyle: true,
-          pointStyle: 'circle'
+          pointStyle: 'circle' as const
         },
       },
       tooltip: {
-        mode: 'index',
+        mode: 'index' as const,
         intersect: false,
         backgroundColor: 'rgba(15, 23, 42, 0.95)',
         titleColor: '#f8fafc',
@@ -837,23 +837,23 @@ export default function AdminDashboard() {
         cornerRadius: 8,
         titleFont: {
           size: 12,
-          weight: '600',
+          weight: 600,
           family: "'Inter', sans-serif"
         },
         bodyFont: {
           size: 12,
-          weight: '500',
+          weight: 500,
           family: "'Inter', sans-serif"
         },
         callbacks: {
-          label: function(context) {
+          label: function(context: any) {
             let label = context.dataset.label || '';
             if (label) {
               label += ': ';
             }
             if (context.parsed.y !== null) {
-              label += new Intl.NumberFormat('en-IN', { 
-                style: 'currency', 
+              label += new Intl.NumberFormat('en-IN', {
+                style: 'currency',
                 currency: 'INR',
                 maximumFractionDigits: 0
               }).format(context.parsed.y);
@@ -865,35 +865,35 @@ export default function AdminDashboard() {
     },
     scales: {
       x: {
-        type: 'category',
-        grid: { 
+        type: 'category' as const,
+        grid: {
           display: false,
           drawBorder: false
         },
-        ticks: { 
-          color: '#94a3b8', 
-          font: { 
-            size: 12, 
-            weight: '500',
+        ticks: {
+          color: '#94a3b8',
+          font: {
+            size: 12,
+            weight: 500,
             family: "'Inter', sans-serif"
-          } 
+          }
         },
       },
       y: {
         beginAtZero: true,
-        grid: { 
+        grid: {
           color: 'rgba(255, 255, 255, 0.05)',
           drawBorder: false,
           drawTicks: false
         },
         ticks: {
           color: '#94a3b8',
-          font: { 
-            size: 11, 
-            weight: '500',
+          font: {
+            size: 11,
+            weight: 500,
             family: "'Inter', sans-serif"
           },
-          callback: function(value) {
+          callback: function(value: any) {
             if (value >= 1000000) {
               return '₹' + (Number(value) / 1000000).toFixed(1) + 'M';
             }
@@ -1437,7 +1437,7 @@ export default function AdminDashboard() {
                             },
                             tooltip: {
                               callbacks: {
-                                label: function(context) {
+                                label: function(context: any) {
                                   const label = context.label || '';
                                   const value = context.raw as number;
                                   return `${label}: ₹${value.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

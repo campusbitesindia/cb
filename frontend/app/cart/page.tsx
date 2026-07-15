@@ -23,6 +23,8 @@ import {
   StickyNote,
 } from 'lucide-react';
 import { useAuth } from '@/context/auth-context';
+import TimeSlotSelector from '@/components/checkout/TimeSlotSelector';
+import { validateTimeSlot } from '@/lib/timeSlotUtils';
 
 function CartPageContent() {
   const { cart, updateQuantity, removeFromCart, clearCart, totalPrice } =
@@ -91,17 +93,19 @@ function CartPageContent() {
       if (!pickupTime) {
         throw new Error('Please select a pickup time');
       }
-      // Validate pickupTime is at least 10 minutes from now
-      const selectedPickupTime = new Date(pickupTime);
-      if (selectedPickupTime.getTime() - Date.now() < 10 * 60 * 1000) {
-        throw new Error('Pickup time must be at least 10 minutes from now');
+      // Re-validate against canteen hours and the current rolling lead buffer
+      const slotCheck = validateTimeSlot(pickupTime);
+      if (!slotCheck.valid) {
+        throw new Error(
+          slotCheck.reason || 'Selected pickup time is no longer available'
+        );
       }
 
       // Prepare backend data
       const items = JSON.stringify(cart);
       const Newdata = {
         items,
-        pickUpTime: selectedPickupTime.toISOString(),
+        pickUpTime: new Date(pickupTime).toISOString(),
         canteenId,
       };
       console.log(Newdata);
@@ -357,15 +361,12 @@ function CartPageContent() {
                 className='block mb-2 font-semibold text-gray-900 dark:text-white'>
                 Select Pickup Time
               </label>
-              <Input
-                id='pickupTime'
-                type='datetime-local'
-                value={pickupTime}
-                onChange={(e) => setPickupTime(e.target.value)}
-                className='w-full'
+              <TimeSlotSelector
+                selectedValue={pickupTime}
+                onChange={(value) => setPickupTime(value)}
               />
-              <p className='mt-1 text-xs text-gray-500 dark:text-gray-400'>
-                Pickup time must be at least 10 minutes from now.
+              <p className='mt-2 text-xs text-gray-500 dark:text-gray-400'>
+                Last pickup is 30 minutes before the canteen closes.
               </p>
             </div>
 
