@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useMemo, memo } from "react";
+import React, { useState, useEffect, useReducer, useMemo, memo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "../component/ui/button";
@@ -337,6 +337,7 @@ function OrdersPageContent() {
   const [showThankYouDialog, setShowThankYouDialog] = useState(false);
   // Store the review data for the thank you dialog
   const [thankYouReviewData, setThankYouReviewData] = useState(null);
+  const fifthStarRef = useRef(null);
   const dispatch = useDispatch();
   // Load viewed reviews from localStorage on component mount
   useEffect(() => {
@@ -876,7 +877,12 @@ function OrdersPageContent() {
 
       {/* Review Dialog */}
       <Dialog open={showReviewDialog} onOpenChange={setShowReviewDialog}>
-        <DialogContent className="max-w-[98vw] xs:max-w-[95vw] sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-3xl max-h-[95vh] xs:max-h-[90vh] overflow-y-auto mx-0.5 xs:mx-1 sm:mx-4 bg-white dark:bg-slate-900 border-0 shadow-2xl rounded-lg xs:rounded-xl sm:rounded-2xl">
+        <DialogContent 
+        onOpenAutoFocus={(e) => {
+            e.preventDefault();
+            fifthStarRef.current?.focus();
+          }}
+        className="max-w-[98vw] xs:max-w-[95vw] sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-3xl max-h-[95vh] xs:max-h-[90vh] overflow-y-auto mx-0.5 xs:mx-1 sm:mx-4 bg-white dark:bg-slate-900 border-0 shadow-2xl rounded-lg xs:rounded-xl sm:rounded-2xl">
           <DialogHeader className="text-center pb-2 xs:pb-3 sm:pb-6 border-b border-gray-100 dark:border-slate-800 px-2 xs:px-3 sm:px-6">
             <div className="flex justify-center mb-1 xs:mb-2 sm:mb-4">
               <div className="w-10 h-10 xs:w-12 xs:h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 rounded-lg xs:rounded-xl sm:rounded-2xl flex items-center justify-center shadow-xl">
@@ -911,6 +917,7 @@ function OrdersPageContent() {
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
+                    ref={star === 5 ? fifthStarRef : null}
                     type="button"
                     className="cursor-pointer transition-all duration-300 hover:scale-110 active:scale-95 focus:outline-none focus:ring-1 xs:focus:ring-2 sm:focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-600 rounded-full p-0.5 xs:p-1 sm:p-1.5 md:p-2 touch-manipulation"
                     onClick={() => setReviewRating(star)}
@@ -940,7 +947,7 @@ function OrdersPageContent() {
                   rows={3}
                   maxLength={500}
                   required
-                  className="resize-none border-2 border-gray-200 dark:border-slate-700 rounded-lg xs:rounded-xl sm:rounded-xl px-2 xs:px-3 sm:px-4 py-2 xs:py-2.5 sm:py-3 text-xs xs:text-sm sm:text-base leading-relaxed focus:border-orange-400 dark:focus:border-orange-500 focus:ring-1 xs:focus:ring-2 sm:focus:ring-4 focus:ring-orange-100 dark:focus:ring-orange-900/30 transition-all duration-300 bg-white dark:bg-slate-800 w-full min-h-[70px] xs:min-h-[80px] sm:min-h-[100px]"
+                  className="resize-none border-2 border-gray-200 dark:border-slate-700 rounded-lg xs:rounded-xl sm:rounded-xl px-2 xs:px-3 sm:px-4 py-2 xs:py-2.5 sm:py-3 text-xs xs:text-sm sm:text-base leading-relaxed focus:border-orange-400 dark:focus:border-orange-500 focus:ring-1 xs:focus:ring-2 sm:focus:ring-4 focus:ring-orange-100 dark:focus:ring-orange-900/30 transition-all duration-300 bg-white dark:bg-slate-300 w-full min-h-[70px] xs:min-h-[80px] sm:min-h-[100px]"
                 />
                 <div className="absolute bottom-1 xs:bottom-2 sm:bottom-3 right-1 xs:right-2 sm:right-3 text-xs text-gray-400 dark:text-gray-500 bg-white dark:bg-slate-800 px-1 rounded">
                   {reviewComment.length}/500
@@ -954,7 +961,7 @@ function OrdersPageContent() {
                 type="button"
                 variant="outline"
                 onClick={() => setShowReviewDialog(false)}
-                className="w-full xs:w-auto px-3 xs:px-4 sm:px-6 py-2.5 xs:py-3 sm:py-2.5 md:py-3 border-2 border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-800 transition-all duration-300 text-xs xs:text-sm sm:text-base font-medium touch-manipulation"
+                className="w-full xs:w-auto px-3 xs:px-4 sm:px-6 py-2.5 xs:py-3 sm:py-2.5 md:py-3 border-1 border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-200 transition-all duration-300 text-xs xs:text-sm sm:text-base font-medium touch-manipulation"
               >
                 Cancel
               </Button>
