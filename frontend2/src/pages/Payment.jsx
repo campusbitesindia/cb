@@ -35,7 +35,7 @@ export default function PaymentPage() {
   const { disconnectSocket } = useSocket();
   // State
   const [orderDetails, setOrderDetails] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [paymentMethod, setPaymentMethod] = useState("upi");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isRefundModalOpen, setIsRefundModalOpen] = useState(false);
 
@@ -291,7 +291,7 @@ export default function PaymentPage() {
               className="space-y-4"
             >
               {/* Cash on Delivery */}
-              <div className="flex items-center space-x-2 p-4 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800">
+              {/* <div className="flex items-center space-x-2 p-4 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800">
                 <RadioGroupItem value="cod" id="cod" />
                 <Label htmlFor="cod" className="flex-1 cursor-pointer">
                   <div className="flex items-center space-x-3">
@@ -306,7 +306,28 @@ export default function PaymentPage() {
                     </div>
                   </div>
                 </Label>
-              </div>
+              </div> */}
+              <div className="flex items-center space-x-2 p-4 border border-gray-300 dark:border-gray-600 rounded-lg opacity-60 cursor-not-allowed bg-gray-50 dark:bg-gray-800">
+              <RadioGroupItem value="cod" id="cod" disabled />
+              <Label htmlFor="cod" className="flex-1 cursor-not-allowed">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                    <Truck className="h-4 w-4 text-gray-400" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-gray-500">Cash on Delivery</span>
+                      <span className="text-xs bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300 px-2 py-0.5 rounded-full">
+                        Not Available
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      Currently unavailable in your area
+                    </div>
+                  </div>
+                </div>
+              </Label>
+            </div>
 
               {/* UPI Payment */}
               <div className="flex items-center space-x-2 p-4 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800">
