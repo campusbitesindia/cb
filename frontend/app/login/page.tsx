@@ -238,7 +238,7 @@ export default function LoginPage() {
               <h1 className='text-5xl font-bold bg-gradient-to-r from-orange-400 via-red-500 to-pink-500 bg-clip-text text-transparent mb-3 transition-all duration-500'>
                 Campus Bites
               </h1>
-              <p className='text-gray-400 text-lg'>
+              <p className='text-slate-500 dark:text-gray-400 text-lg'>
                 Your premium campus food experience
               </p>
             </div>
@@ -250,8 +250,8 @@ export default function LoginPage() {
                   <GraduationCap className='w-8 h-8 text-white' />
                 </div>
                 <div>
-                  <h3 className='text-white font-bold text-lg'>Students</h3>
-                  <p className='text-gray-400'>
+                  <h3 className='text-slate-900 dark:text-white font-bold text-lg'>Students</h3>
+                  <p className='text-slate-500 dark:text-gray-400'>
                     Order your favorite meals instantly
                   </p>
                 </div>
@@ -262,10 +262,10 @@ export default function LoginPage() {
                   <Users className='w-8 h-8 text-white' />
                 </div>
                 <div>
-                  <h3 className='text-white font-bold text-lg'>
+                  <h3 className='text-slate-900 dark:text-white font-bold text-lg'>
                     Campus Partners
                   </h3>
-                  <p className='text-gray-400'>
+                  <p className='text-slate-500 dark:text-gray-400'>
                     Manage your restaurant & orders
                   </p>
                 </div>
@@ -518,7 +518,7 @@ export default function LoginPage() {
                     <h3 className='text-foreground font-semibold mb-2 transition-all duration-500'>
                       Want to partner with us?
                     </h3>
-                    <p className='text-gray-400 text-sm mb-4'>
+                    <p className='text-slate-500 dark:text-gray-400 text-sm mb-4'>
                       Join as a campus Vendor partner
                     </p>
                     <Button
@@ -526,7 +526,7 @@ export default function LoginPage() {
                       asChild
                       variant='outline'
                       aria-label='register your vendor'
-                      className='border-green-500/50 text-green-400 hover:bg-green-500/10 hover:text-green-300 transition-all duration-500 bg-transparent'>
+                      className='border-green-500/50 text-green-600 dark:text-green-400 hover:bg-green-500/10 hover:text-green-700 dark:hover:text-green-300 transition-all duration-500 bg-transparent'>
                       <Link
                         href='/campus/register'
                         aria-label='Register your vendor'>

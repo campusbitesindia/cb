@@ -96,7 +96,7 @@ export default function LandingPageClient() {
         willChange: 'transform',
       }}>
       {/* Hero Section */}
-      <section className='relative min-h-[80vh] flex items-center justify-center bg-white dark:bg-[#0a192f]'>
+      <section className='relative min-h-[80vh] flex items-center justify-center bg-white dark:bg-[#0a192f] transition-colors duration-500'>
         <div className='container mx-auto px-4 py-20 relative z-10'>
           <div className='grid lg:grid-cols-2 gap-12 items-center'>
             {/* Left Content */}

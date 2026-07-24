@@ -11,7 +11,7 @@ const PieChart = lazy(() =>
   import('recharts').then((module) => ({ default: module.PieChart }))
 );
 const Pie = lazy(() =>
-  import('recharts').then((module) => ({ default: module.Pie }))
+  import('recharts').then((module) => ({ default: module.Pie as unknown as React.ComponentType<any> }))
 );
 const Cell = lazy(() =>
   import('recharts').then((module) => ({ default: module.Cell }))
@@ -38,7 +38,7 @@ const BarChart = lazy(() =>
   import('recharts').then((module) => ({ default: module.BarChart }))
 );
 const Bar = lazy(() =>
-  import('recharts').then((module) => ({ default: module.Bar }))
+  import('recharts').then((module) => ({ default: module.Bar as unknown as React.ComponentType<any> }))
 );
 const Legend = lazy(() =>
   import('recharts').then((module) => ({ default: module.Legend }))

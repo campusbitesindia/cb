@@ -162,7 +162,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             <TooltipTrigger asChild>{buttonContent}</TooltipTrigger>
             <TooltipContent
               side='right'
-              className='bg-slate-900 text-white border-slate-700 shadow-xl backdrop-blur-sm'>
+              className='bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-slate-200 dark:border-slate-700 shadow-xl backdrop-blur-sm'>
               <p className='font-medium'>{label}</p>
             </TooltipContent>
           </Tooltip>
@@ -285,7 +285,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
                   </TooltipTrigger>
                   <TooltipContent
                     side='right'
-                    className='bg-slate-900 text-white border-slate-700 shadow-xl backdrop-blur-sm'>
+                    className='bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-slate-200 dark:border-slate-700 shadow-xl backdrop-blur-sm'>
                     <p className='font-medium'>Expand Sidebar</p>
                   </TooltipContent>
                 </Tooltip>
@@ -324,7 +324,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
                 </TooltipTrigger>
                 <TooltipContent
                   side='right'
-                  className='bg-slate-900 text-white border-slate-700 shadow-xl backdrop-blur-sm'>
+                  className='bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-slate-200 dark:border-slate-700 shadow-xl backdrop-blur-sm'>
                   <p className='font-medium'>Logout</p>
                 </TooltipContent>
               </Tooltip>

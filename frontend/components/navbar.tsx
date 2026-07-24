@@ -583,13 +583,13 @@ function Navbar() {
                   </nav>
 
                   {!isAuthenticated && (
-                    <div className='p-6 border-t border-white/10 space-y-4'>
+                    <div className='p-6 border-t border-gray-200/60 dark:border-white/10 space-y-4'>
                       <Button
                         asChild
                         variant='outline'
-                        className='w-full bg-gray-200 text-white dark:text-black font-semibold rounded-xl py-4 shadow-md 
-             transition-colors transition-transform duration-300 hover:scale-105 
-             hover:bg-gray-300'>
+                        className='w-full bg-gray-100 dark:bg-gray-200 text-slate-900 dark:text-black font-semibold rounded-xl py-4 shadow-md
+             transition-colors transition-transform duration-300 hover:scale-105
+             hover:bg-gray-200 dark:hover:bg-gray-300'>
                         <Link
                           href='/login'
                           onClick={() => setIsMenuOpen(false)}>
