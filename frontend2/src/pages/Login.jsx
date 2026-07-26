@@ -1,82 +1,17 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 import { Button } from "../component/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../component/ui/form";
-import { Input } from "../component/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../component/ui/select";
-import {
-  Eye,
-  EyeOff,
-  Mail,
-  Lock,
-  ArrowRight,
-  Users,
-  GraduationCap,
-} from "lucide-react";
+import { Users, GraduationCap } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../component/ui/tooltip";
-import { Login } from "../services/operations/Auth";
-import { useDispatch } from "react-redux";
-import { setToken, setUser } from "../slices/authSlice";
-import GoogleSignUp from "../component/core/Auth/GoogleSignup";
+import { VerifyLoginOtp } from "../services/operations/Auth";
+import PhoneOtpForm from "../component/core/Auth/PhoneOtpForm";
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const form = useForm({
-    defaultValues: {
-      email: "",
-      password: "",
-      role: undefined,
-    },
-  });
-  const selectedRole = form.watch("role");
-
-  const getRoleIcon = (role) => {
-    switch (role) {
-      case "student":
-        return <GraduationCap className="w-5 h-5" />;
-      case "campus":
-        return <Users className="w-5 h-5" />;
-      default:
-        return null;
-    }
-  };
-
-  const getRoleColor = (role) => {
-    switch (role) {
-      case "student":
-        return "from-blue-500 to-purple-600";
-      case "campus":
-        return "from-green-500 to-emerald-600";
-      default:
-        return "";
-    }
-  };
-
-  const onSubmit = (values) => {
-    dispatch(Login(values, navigate));
-  };
-
   return (
     <div className="min-h-screen w-full bg-background dark:bg-[#05080f] flex justify-center relative overflow-hidden transition-all duration-500">
       {/* Background: fully animated and custom colored */}
@@ -188,159 +123,7 @@ export default function LoginPage() {
                     </TooltipProvider>
                   </p>
                 </div>
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-8"
-                  >
-                    <FormField
-                      control={form.control}
-                      name="role"
-                      render={({ field }) => (
-                        <FormItem>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                            defaultValue={field.value}
-                          >
-                            <SelectTrigger className="bg-[#2d3748] dark:bg-[#2d3748] border-[#4a5568] dark:border-[#4a5568] text-white dark:text-white rounded-xl h-14 text-lg focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-400 focus:border-blue-400 w-full transition-all duration-300 hover:bg-[#374151] dark:hover:bg-[#374151]">
-                              <SelectValue placeholder="Select your role" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-[#1a202c] dark:bg-[#1a202c] border-[#4a5568] dark:border-[#4a5568] rounded-xl shadow-2xl">
-                              <SelectItem
-                                className="text-white dark:text-white cursor-pointer hover:bg-[#2d3748] dark:hover:bg-[#2d3748] focus:bg-[#2d3748] dark:focus:bg-[#2d3748] rounded-lg mx-1 my-1 transition-colors duration-200"
-                                value="student"
-                              >
-                                Student
-                              </SelectItem>
-                              <SelectItem
-                                className="text-white dark:text-white cursor-pointer hover:bg-[#2d3748] dark:hover:bg-[#2d3748] focus:bg-[#2d3748] dark:focus:bg-[#2d3748] rounded-lg mx-1 my-1 transition-colors duration-200"
-                                value="campus"
-                              >
-                                Campus Partner
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-foreground text-lg font-semibold transition-all duration-500 dark:text-[#e2e8f0]">
-                            Email Address
-                          </FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-slate-400 w-6 h-6 transition-all duration-500 drop-shadow" />
-                              <Input
-                                placeholder="Enter your email"
-                                type="email"
-                                aria-label="enter your email here"
-                                autoComplete="email"
-                                className="pl-12 bg-input dark:bg-[#232838] border-border dark:border-[#38405a] text-foreground dark:text-[#e2e8f0] placeholder-muted-foreground dark:placeholder-[#8892b0] rounded-xl h-14 text-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-500"
-                                {...field}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage className="text-red-400" />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <div className="flex items-center justify-between">
-                            <FormLabel className="text-foreground text-lg font-semibold transition-all duration-500 dark:text-[#e2e8f0]">
-                              Password
-                            </FormLabel>
-                            <Link
-                              to="/resetMail"
-                              aria-label="forgot password"
-                              className="text-sm text-red-400 hover:text-red-300 hover:underline transition-all duration-500"
-                            >
-                              Forgot password?
-                            </Link>
-                          </div>
-                          <FormControl>
-                            <div className="relative">
-                              <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-slate-400 w-6 h-6 transition-all duration-500 drop-shadow" />
-                              <Input
-                                placeholder="Enter your password"
-                                aria-label="enter your password here"
-                                type={showPassword ? "text" : "password"}
-                                autoComplete="current-password"
-                                className="pl-12 bg-input dark:bg-[#232838] border-border dark:border-[#38405a] text-foreground dark:text-[#e2e8f0] placeholder-muted-foreground dark:placeholder-[#8892b0] rounded-xl h-14 text-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-500"
-                                {...field}
-                              />
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <button
-                                      type="button"
-                                      aria-label="show password"
-                                      onClick={() =>
-                                        setShowPassword(!showPassword)
-                                      }
-                                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors"
-                                    >
-                                      {showPassword ? (
-                                        <EyeOff className="w-6 h-6" />
-                                      ) : (
-                                        <Eye className="w-6 h-6" />
-                                      )}
-                                    </button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    Show/Hide password
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </div>
-                          </FormControl>
-                          <FormMessage className="text-red-400" />
-                        </FormItem>
-                      )}
-                    />
-                    <Button
-                      type="submit"
-                      aria-label="sign in button"
-                      className={`w-full ${
-                        selectedRole
-                          ? `bg-gradient-to-r ${getRoleColor(selectedRole)}`
-                          : "bg-gradient-to-r from-red-500 to-rose-500"
-                      } hover:scale-105 text-white font-bold py-4 rounded-xl transition-all duration-500 shadow-lg text-lg group`}
-                    >
-                      <div className="flex items-center gap-3">
-                        {selectedRole && getRoleIcon(selectedRole)}
-                        Sign In
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-all duration-500" />
-                      </div>
-                    </Button>
-                  </form>
-                </Form>
-
-                {/* Role-Specific Login Options */}
-                {selectedRole === "student" && (
-                  <>
-                    <div className="relative my-6">
-                      <div className="absolute inset-0 flex items-center">
-                        <span className="w-full border-t border-border dark:border-[#38405a] transition-all duration-500" />
-                      </div>
-                      <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-card dark:bg-[#232838] backdrop-blur-xl px-2 text-muted-foreground dark:text-[#8892b0] transition-all duration-500">
-                          Or continue with
-                        </span>
-                      </div>
-                    </div>
-                   <GoogleSignUp isLogin={true}/>
-                  </>
-                )}
+                <PhoneOtpForm purpose="login" onVerify={VerifyLoginOtp} />
 
                 {/* Campus Registration CTA */}
                 <div className="mt-8 p-6 bg-gradient-to-r from-green-500/10 to-emerald-500/10 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-500/20 dark:border-green-900/40 rounded-2xl transition-all duration-500">

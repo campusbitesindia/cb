@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import AdvertisementBanner from "../component/common/AdvertisementBanner";
+import { Baseurl } from "../services/api";
 const categories = [
   { id: "all", name: "All", icon: "🍽️" },
   { id: "indian", name: "Indian", icon: "🍛" },
@@ -411,7 +412,7 @@ export default function StudentDashboard() {
     setIsCreatingOrder(true);
     try {
       console.log("Sending create group order request:", {
-        url: "https://cbbackend-kvp6.onrender.com/api/v1/groupOrder/create-order",
+        url: `${Baseurl}/groupOrder/create-order`,
         method: "POST",
         bodyData: { canteen: selectedCanteen },
         headers: {
@@ -425,7 +426,7 @@ export default function StudentDashboard() {
       }
 
       const res = await fetch(
-        "https://cbbackend-kvp6.onrender.com/api/v1/groupOrder/create-order",
+        `${Baseurl}/groupOrder/create-order`,
         {
           method: "POST",
           headers: {

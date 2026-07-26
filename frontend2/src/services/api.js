@@ -1,14 +1,37 @@
-const Baseurl = "https://cbbackend-kvp6.onrender.com/api/v1";
+// Central place for the backend base URL. Switches automatically between
+// local and production based on VITE_APP_BASE_URL, which is set per-environment
+// in .env.development / .env.production (see frontend2/README section on envs).
+export const Baseurl = import.meta.env.VITE_APP_BASE_URL;
+
+// Base URL of the frontend itself (used for building shareable links, e.g.
+// group order invite links). Works correctly in both local and production
+// without needing a separate env var.
+export const FrontendUrl = typeof window !== "undefined" ? window.location.origin : "";
+
+// The Socket.IO server runs on the same backend process/port as the REST
+// API, just without the "/api/v1" prefix - so we derive it from Baseurl
+// instead of needing a separately-configured env var (which was previously
+// missing entirely, causing socket.io-client to silently fall back to the
+// page's own origin and loop forever trying to handshake with the frontend
+// dev server).
+export const SocketUrl = Baseurl.replace(/\/api\/v1\/?$/, "");
 
 export const AuthApi = {
   RegisterVendorapi: Baseurl + "/canteens/create",
-  Loginapi: Baseurl + "/users/login",
-  SignUpapi: Baseurl + "/users/register",
   getProfileDetails: Baseurl + "/users/profile",
   updateUserProfile: Baseurl + "/users/profile",
   updateProfilePic: Baseurl + "/users/profile/image",
   BankDetailsapi: Baseurl + "/bank-details/",
-  verifyOtpApi: Baseurl + "/users/verify-email",
+
+  // Phone number + OTP authentication (current auth system)
+  sendOtpApi: Baseurl + "/users/phone/send-otp",
+  verifyOtpApi: Baseurl + "/users/phone/verify-otp",
+  completeProfileApi: Baseurl + "/users/complete-profile",
+
+  // DEPRECATED - kept only for reference, no longer used by the frontend
+  Loginapi: Baseurl + "/users/login",
+  SignUpapi: Baseurl + "/users/register",
+  verifyEmailOtpApi: Baseurl + "/users/verify-email",
   sendForgotMail: Baseurl + "/users/forgotPass",
   resetPassword: Baseurl + "/users/resetPassword",
 };

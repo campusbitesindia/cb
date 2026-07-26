@@ -1,4 +1,5 @@
 import React from "react";
+import { Baseurl, FrontendUrl } from "../services/api";
 
 class CreateGroupOrderPage extends React.Component {
   constructor(props) {
@@ -13,25 +14,20 @@ class CreateGroupOrderPage extends React.Component {
   }
 
   componentDidMount() {
-    // Normally you'd check authentication here
     this.fetchCanteens();
   }
 
   fetchCanteens = async () => {
     try {
-      const res = await fetch(
-        "https://cbbackend-kvp6.onrender.com/api/v1/canteens",
-        {
-          headers: { Authorization: `Bearer ${this.state.token}` },
-        }
-      );
+      const res = await fetch(`${Baseurl}/canteens`, {
+        headers: { Authorization: `Bearer ${this.state.token}` },
+      });
       if (!res.ok) throw new Error("Failed to fetch canteens");
 
       const data = await res.json();
       this.setState({
         canteens: data.canteens || [],
-        selectedCanteen:
-          data.canteens.length > 0 ? data.canteens[0]._id : "",
+        selectedCanteen: data.canteens.length > 0 ? data.canteens[0]._id : "",
       });
     } catch (err) {
       alert("Error: " + err.message);
@@ -50,7 +46,7 @@ class CreateGroupOrderPage extends React.Component {
 
     try {
       const res = await fetch(
-        "https://cbbackend-kvp6.onrender.com/api/v1/groupOrder/create-order",
+        "http://localhost:8080/api/v1/groupOrder/create-order",
         {
           method: "POST",
           headers: {
@@ -68,7 +64,6 @@ class CreateGroupOrderPage extends React.Component {
 
       const data = await res.json();
       this.setState({ newGroupOrderDetails: data.data });
-      alert("Group Order Created! Share the link or QR code with friends.");
     } catch (err) {
       alert("Error: " + err.message);
     } finally {
@@ -82,12 +77,7 @@ class CreateGroupOrderPage extends React.Component {
   };
 
   render() {
-    const {
-      canteens,
-      selectedCanteen,
-      isLoading,
-      newGroupOrderDetails,
-    } = this.state;
+    const { canteens, selectedCanteen, isLoading, newGroupOrderDetails } = this.state;
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex flex-col items-center justify-center py-12 px-4">
@@ -98,20 +88,14 @@ class CreateGroupOrderPage extends React.Component {
 
           {!newGroupOrderDetails ? (
             <div className="space-y-6">
-              {/* Select Canteen */}
               <div>
-                <label
-                  htmlFor="canteen-select"
-                  className="block text-gray-300 mb-2"
-                >
+                <label htmlFor="canteen-select" className="block text-gray-300 mb-2">
                   Select Canteen
                 </label>
                 <select
                   id="canteen-select"
                   value={selectedCanteen}
-                  onChange={(e) =>
-                    this.setState({ selectedCanteen: e.target.value })
-                  }
+                  onChange={(e) => this.setState({ selectedCanteen: e.target.value })}
                   className="w-full p-2 rounded bg-gray-700 text-gray-200 border border-gray-600"
                 >
                   {canteens.map((canteen) => (
@@ -122,7 +106,6 @@ class CreateGroupOrderPage extends React.Component {
                 </select>
               </div>
 
-              {/* Create Button */}
               <button
                 onClick={this.handleCreateGroupOrder}
                 disabled={isLoading || !selectedCanteen}
@@ -133,14 +116,12 @@ class CreateGroupOrderPage extends React.Component {
             </div>
           ) : (
             <div className="text-center space-y-6">
-              <h2 className="text-2xl font-bold text-green-400">
-                Group Order Created! 🎉
-              </h2>
+              <h2 className="text-2xl font-bold text-green-400">Group Order Created! 🎉</h2>
               <p className="text-gray-300">
-                Share this with your friends to join:
+                Share this with your friends. Anyone who scans or opens it can add items —
+                they'll only join the group once they've paid for what they added.
               </p>
 
-              {/* QR Code */}
               {newGroupOrderDetails.qrCodeUrl && (
                 <div className="mt-4 flex flex-col items-center">
                   <div className="p-4 bg-white rounded-lg shadow-lg">
@@ -152,26 +133,21 @@ class CreateGroupOrderPage extends React.Component {
                       className="rounded"
                     />
                   </div>
-                  <p className="text-sm text-gray-400 mt-3">
-                    Scan QR code to join
-                  </p>
+                  <p className="text-sm text-gray-400 mt-3">Scan QR code to join</p>
                 </div>
               )}
 
-              {/* Group Link */}
               <div className="bg-gray-700 p-4 rounded-lg border border-gray-600 break-words">
-                <label className="block text-gray-300 text-sm font-medium mb-2">
-                  Group Link:
-                </label>
+                <label className="block text-gray-300 text-sm font-medium mb-2">Group Link:</label>
                 <div className="bg-gray-800 p-3 rounded border border-gray-600 mb-3">
                   <p className="text-red-400 font-mono text-sm break-all">
-                    {`https://campusbites-mxpe.onrender.com/group-order?link=${newGroupOrderDetails.groupLink}`}
+                    {`${FrontendUrl}/group-order?link=${newGroupOrderDetails.groupLink}`}
                   </p>
                 </div>
                 <button
                   onClick={() =>
                     this.copyLink(
-                      `https://campusbites-mxpe.onrender.com/group-order?link=${newGroupOrderDetails.groupLink}`
+                      `${FrontendUrl}/group-order?link=${newGroupOrderDetails.groupLink}`
                     )
                   }
                   className="w-full border border-gray-600 text-gray-200 py-2 rounded hover:bg-gray-600"
@@ -180,11 +156,8 @@ class CreateGroupOrderPage extends React.Component {
                 </button>
               </div>
 
-              {/* Go to Group Order Page */}
               <button
-                onClick={() =>
-                  (window.location.href = `/group-order?link=${newGroupOrderDetails.groupLink}`)
-                }
+                onClick={() => (window.location.href = `/group-order?link=${newGroupOrderDetails.groupLink}`)}
                 className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg"
               >
                 Go to Group Order Page →

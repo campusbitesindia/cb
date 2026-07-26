@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminAuth } from "@/context/admin-auth-context";
 import { useRouter } from "next/navigation";
+import { Baseurl } from "../../services/api";
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -20,7 +21,7 @@ export default function AdminOrdersPage() {
 
   useEffect(() => {
     setLoading(true);
-    fetch("https://campusbites-mxpe.onrender.com/api/v1/admin/orders/by-campus-canteen")
+    fetch(`${Baseurl}/admin/orders/by-campus-canteen`)
       .then(res => res.json())
       .then(data => {
         setOrders(data || []);

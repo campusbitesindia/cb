@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 import {useDispatch} from "react-redux"
 import { AdminLogin } from "../../services/operations/Admin";
-import { Login } from "../../services/operations/Auth";
 
 export default function AdminLoginPage() {
   const [email, setUsername] = useState("");
@@ -22,7 +21,7 @@ export default function AdminLoginPage() {
       email,
       password
     }
-    dispatch(Login(data,navigate))
+    dispatch(AdminLogin(data,navigate))
     setLoading(false);
   }
 

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
+import { SocketUrl } from '../services/api';
 
 const SocketContext = createContext(null);
 
@@ -19,9 +20,9 @@ export const SocketProvider = ({ children }) => {
   const connectSocket = () => {
     if (!socketRef.current) {
       console.log("connecting to socket...");
-      socketRef.current = io(import.meta.env.VITE_APP_SOCKET_URL);
+      socketRef.current = io(SocketUrl);
 
-      socketRef.current.on("connection", () => {
+      socketRef.current.on("connect", () => {
         console.log("Socket connected:", socketRef.current?.id);
         setIsConnected(true);
       });

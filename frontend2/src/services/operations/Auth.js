@@ -20,84 +20,184 @@ export const LogOutUser = (dispatch, navigate) => {
   navigate("/");
 };
 
-export const VerifyOtp = (data, setOtpDialog, navigate) => {
-  return async (dispatch) => {
-    const toastId = toast.loading("verifying Otp...");
+// ============================================================
+// Phone Number + OTP Authentication (current auth system)
+// ============================================================
+
+const navigateByRole = (navigate, role) => {
+  if (role === Roles.Admin) navigate("/admin/dashboard");
+  else if (role === Roles.Student) navigate("/student/dashboard");
+  else if (role === Roles.Vendor) navigate("/dashboard/overview");
+  else navigate("/");
+};
+
+// Sends an OTP to the given 10 digit phone number.
+// purpose: "signup" | "login"
+// Returns true/false so calling components can decide what to do next
+// (e.g. move to the OTP-entry step).
+export const SendPhoneOtp = (phone, purpose) => {
+  return async () => {
+    const toastId = toast.loading("Sending OTP...");
+    let result = { success: false, retryAfter: 0 };
     try {
-      const response = await apiConnector(AuthApi.verifyOtpApi, "POST", data);
+      const response = await apiConnector(AuthApi.sendOtpApi, "POST", {
+        phone,
+        purpose,
+      });
       if (!response.data.success) {
         throw new Error(response.data.message);
       }
-      toast.success("Otp verified SuccessFully,please login to you account");
-      setOtpDialog(false);
-      navigate("/login");
+      toast.success("OTP sent to your phone");
+      result = { success: true, retryAfter: 0 };
     } catch (err) {
-      toast.error(err?.response?.data?.message);
+      toast.error(err?.response?.data?.message || "Failed to send OTP");
+      // If the server is enforcing a resend cooldown, sync our local timer
+      // with it so the button reflects the real wait time (e.g. after a
+      // page refresh resets the client-side countdown but the server still
+      // remembers the last request).
+      result = { success: false, retryAfter: err?.response?.data?.retryAfter || 0 };
     }
     toast.dismiss(toastId);
+    return result;
   };
 };
 
-export const Login = (data, navigate) => {
-  const toastId = toast.loading("please Wait..");
+// Verifies the OTP for a signup attempt. On success, a "partial" JWT + user
+// (profileCompleted: false) is stored, and the caller should navigate to
+// /complete-profile to finish onboarding.
+export const VerifySignupOtp = (phone, otp, navigate, redirectPath = "/complete-profile") => {
   return async (dispatch) => {
+    const toastId = toast.loading("Verifying OTP...");
     try {
-      const response = await apiConnector(AuthApi.Loginapi, "POST", data);
+      const response = await apiConnector(AuthApi.verifyOtpApi, "POST", {
+        phone,
+        otp,
+        purpose: "signup",
+      });
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
 
       dispatch(setToken(response.data.token));
-      dispatch(setUser(response.data.user1));
-
+      dispatch(setUser(response.data.user));
       localStorage.setItem("token", JSON.stringify(response.data.token));
-      localStorage.setItem("User", JSON.stringify(response.data.user1));
+      localStorage.setItem("User", JSON.stringify(response.data.user));
 
-      toast.success("Login successful!");
-
-      response.data.user1.role === Roles.Admin
-        ? navigate("/admin/dashboard")
-        : response.data.user1 === Roles.Student
-        ? navigate("/student/dashboard")
-        : navigate("/dashboard/overview");
+      toast.success("Phone verified! Let's finish setting up your account.");
+      navigate(redirectPath);
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Login Failed");
+      toast.error(err?.response?.data?.message || "Invalid OTP");
     }
     toast.dismiss(toastId);
   };
 };
-export const registerVendor = (data, navigate) => {
-  const toastId = toast.loading("Registring Canteen");
 
+// Verifies the OTP for a login attempt. On success, either logs the user in
+// fully (if their profile is already complete) or sends them to finish
+// onboarding (if they verified their phone during signup but never
+// completed their profile).
+export const VerifyLoginOtp = (phone, otp, navigate) => {
   return async (dispatch) => {
+    const toastId = toast.loading("Verifying OTP...");
+    try {
+      const response = await apiConnector(AuthApi.verifyOtpApi, "POST", {
+        phone,
+        otp,
+        purpose: "login",
+      });
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      dispatch(setToken(response.data.token));
+      dispatch(setUser(response.data.user));
+      localStorage.setItem("token", JSON.stringify(response.data.token));
+      localStorage.setItem("User", JSON.stringify(response.data.user));
+
+      if (!response.data.profileCompleted) {
+        toast.success("Almost there! Let's finish setting up your account.");
+        navigate("/complete-profile");
+        return;
+      }
+
+      toast.success("Login successful!");
+      navigateByRole(navigate, response.data.user.role);
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Invalid OTP");
+    } finally {
+      toast.dismiss(toastId);
+    }
+  };
+};
+
+// Completes onboarding for a phone-verified user: name, role, campus.
+// Students are fully done after this. Canteen owners get redirected to
+// finish their canteen KYC details (handled by the calling component).
+export const CompleteProfile = (data, token, navigate) => {
+  return async (dispatch) => {
+    const toastId = toast.loading("Saving your details...");
+    let result = null;
     try {
       const response = await apiConnector(
-        AuthApi.RegisterVendorapi,
+        AuthApi.completeProfileApi,
         "POST",
-        data
+        data,
+        { Authorization: `Bearer ${token}` }
       );
       if (!response.data.success) {
         throw new Error(response.data.message);
       }
 
-      toast.success("Canteen Created SuccessFully,Please Wait For approval");
-      navigate("/login");
+      dispatch(setToken(response.data.token));
+      dispatch(setUser(response.data.user));
+      localStorage.setItem("token", JSON.stringify(response.data.token));
+      localStorage.setItem("User", JSON.stringify(response.data.user));
+
+      result = response.data;
+
+      if (response.data.profileCompleted) {
+        toast.success("Profile completed successfully!");
+        navigateByRole(navigate, response.data.user.role);
+      } else {
+        toast.success("Almost done! Add your canteen details to finish up.");
+      }
     } catch (err) {
-      toast.error(err?.response?.data?.message || "error Occurered");
+      toast.error(err?.response?.data?.message || "Something went wrong");
     }
     toast.dismiss(toastId);
+    return result;
   };
 };
-export const RegisterUser = (data) => {
+
+// Submits canteen KYC details (multipart/form-data with images) for a user
+// who has already completed the "role: canteen" step of CompleteProfile.
+// Marks the profile fully complete on success.
+export const CreateCanteenProfile = (formData, token, navigate) => {
   return async (dispatch) => {
-    const toastId = toast.loading("Creating Account Please Wait");
+    const toastId = toast.loading("Setting up your canteen...");
     try {
-      const response = await apiConnector(AuthApi.SignUpapi, "POST", data);
-      if (!response.data.message) {
+      const response = await apiConnector(
+        AuthApi.RegisterVendorapi,
+        "POST",
+        formData,
+        {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        }
+      );
+      if (!response.data.success) {
         throw new Error(response.data.message);
       }
-      toast.success("Plese Verify Otp");
+
+      toast.success("Canteen created successfully! Please wait for approval.");
+      navigate("/dashboard/overview");
+      return true;
     } catch (err) {
-      toast.error(err?.response?.data?.message || "error occurred at SignUp");
+      toast.error(err?.response?.data?.message || "Failed to create canteen");
+      return false;
+    } finally {
+      toast.dismiss(toastId);
     }
-    toast.dismiss(toastId);
   };
 };
 
@@ -114,7 +214,7 @@ export const getUserProfileDetails = (token, navigate) => {
         throw new Error(response.data.message);
       }
 
-      if (response.data.user.role === Roles.Vendor) {
+      if (response.data.user.role === Roles.Vendor && response.data.user.canteenId) {
         dispatch(setCanteenId(response.data.user.canteenId._id));
         dispatch(setCanteen(response.data.user.canteenId));
         localStorage.setItem(

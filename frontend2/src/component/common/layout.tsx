@@ -1,6 +1,5 @@
 import React from "react";
 
-import { Toaster } from "react-hot-toast";
 import { GlobalRouteProtection } from "./GlobalRouteProtection";
 import Footer from "./footer";
 import Navbar from "./navbar";
@@ -40,7 +39,6 @@ export default function RootLayout({ children }) {
         {/* Footer */}
         <Footer />
       </div>
-      <Toaster />
     </GlobalRouteProtection>
   );
 }

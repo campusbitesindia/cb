@@ -35,7 +35,6 @@ import VendorRegisterPage from "./pages/VendorRegister";
 import Orders from "./pages/Orders";
 import ProfileWithErrorBoundary from "./pages/Profile";
 import Cart from "./pages/Cart";
-import Forgotpassword from "./pages/ForgotPassword";
 import CanteenMenuPage from "./pages/CanteenMenu";
 import AdminLoginPage from "./pages/admin/LoginPage";
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -49,9 +48,8 @@ import CampusUsersPage from "./pages/admin/CampusUsersPage";
 import AdminPayoutsPage from "./pages/admin/PayoutsPage";
 import BankDetailsVerification from "./pages/admin/BankDetailsVerfication";
 import { usePushSubscription } from "./hooks/useSubsciption";
-import VerifyEmailPage from "./pages/VerifyEmail";
-import ForgotPasswordPage from "./pages/ResetMail";
 import DashboardOverview from "./component/core/dashBoard/landingPage";
+import CompleteProfilePage from "./pages/CompleteProfile";
 import AboutPage from "./pages/AboutUs";
 import FAQPage from "./pages/FAQ";
 import TermsConditionsPage from "./pages/TermsAndCondition";
@@ -110,6 +108,7 @@ function App() {
               </OpenRoute>
             }
           />
+          <Route path="/complete-profile" element={<CompleteProfilePage />} />
 
           {/* Student routes */}
           <Route
@@ -176,12 +175,6 @@ function App() {
             }
           />
           <Route path="/payment" element={<PaymentPage />} />
-          <Route
-            path="/account/verify-email/:email"
-            element={<VerifyEmailPage />}
-          />
-          <Route path="/resetMail" element={<ForgotPasswordPage />} />
-          <Route path="resetPassword/:token" element={<Forgotpassword />} />
           {/* admin routes */}
           <Route path="/admin-login" element={<AdminLoginPage />} />
           <Route
